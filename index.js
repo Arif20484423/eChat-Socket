@@ -1,24 +1,32 @@
-const express = require("express")
-const cors= require('cors')
-const app= express();
-const http= require("http")
-const {Server} = require("socket.io")
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const http = require("http");
+const { Server } = require("socket.io");
 
 app.use(cors());
-const server = http.createServer(app)
+const server = http.createServer(app);
 
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CHATAPP_URL,
+    method: ["GET", "POST"],
+  },
+});
 
+io.on("connection", (socket) => {
+  console.log("Connected ");
+  socket.on("join_room", (data) => {
+    socket.join(data.room)
+    // socket.to("1").emit("message",data.room)
+  });
+  socket.on('message',(data)=>{
+    console.log(data)
+    socket.to(data.room).emit("message",data.message);
+  })
+});
 
-const io= new Server(server,{
-    origin:"http://localhost:3000",
-    method:["GET","POST"]
-})
-
-io.on("connection",(socket)=>{
-    
-})
-
-
-server.listen("4000",()=>{
-    console.log("Socket server running")
-})
+server.listen("4000", () => {
+  console.log("Socket server running");
+  
+});
