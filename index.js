@@ -1,12 +1,13 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const http = require("http");
+const https= require("https");
 const { Server } = require("socket.io");
-
+require("dotenv").config()
 app.use(cors());
-const server = http.createServer(app);
+const server = https.createServer(app);
 
+// console.log(process.env.CHATAPP_URL)
 const io = new Server(server, {
   cors: {
     origin: process.env.CHATAPP_URL,
