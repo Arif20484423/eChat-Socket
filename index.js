@@ -7,7 +7,6 @@ require("dotenv").config()
 app.use(cors());
 const server = http.createServer(app);
 
-// console.log(process.env.CHATAPP_URL)
 const io = new Server(server, {
   cors: {
     origin: process.env.CHATAPP_URL,
@@ -15,16 +14,21 @@ const io = new Server(server, {
   },
 });
 
+
 io.on("connection", (socket) => {
   console.log("Connected ");
-  socket.on("join_room", (data) => {
+  socket.on("join_room",(data)=>{
     socket.join(data.room)
-    // socket.to("1").emit("message",data.room)
-  });
-  socket.on('message',(data)=>{
-    console.log(data)
-    socket.to(data.room).emit("message",data.message);
+    socket.user=data.room;
+    console.log("joined");
   })
+  socket.on("message",(data)=>{
+    console.log("msg to ")
+    socket.to(data.to).emit("message",{from:socket.user,message:data.message})
+  })
+
+
+    
 });
 
 server.listen("4000", () => {
