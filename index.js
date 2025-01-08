@@ -24,8 +24,14 @@ io.on("connection", (socket) => {
     console.log("joined");
   })
   socket.on("message",(data)=>{
-    console.log("msg to ")
+  
     socket.to(data.to).emit("message",{from:socket.user,message:data.message})
+  })
+  socket.on("groupmessage",(data)=>{
+    for(let i=0;i<data.to.length;i++){
+      socket.to(data.to[i]).emit("message",{from:socket.user,message:data.message})
+    }
+    
   })
 
 
