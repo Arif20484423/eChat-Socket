@@ -23,19 +23,23 @@ io.on("connection", (socket) => {
     socket.join(data.room);
     socket.user = data.room;
     console.log("joined");
+    socket.emit("check",{"check":"true"})
+    socket.to(["6865045782b8737c7767d856"]).emit("checkto", { checkto: "true" });
   });
+  socket.to("6865045782b8737c7767d856").emit("checkto",{"checkto":"true"})
   socket.on("message", (data) => {
     console.log("REC", data.to[0]);
-    
+    console.log(data.from)
+    console.log(data.message)
     socket
       .to(data.to)
-      .emit("message", { from: socket.user, message: data.message });
+      .emit("message", { from: data.from, message: data.message });
   });
   socket.on("delete", (data) => {
     console.log("passing delete", data.to);
     socket
       .to(data.to)
-      .emit("delete", { from: socket.user, message: data.message });
+      .emit("delete", { from: data.from, message: data.message });
   });
   socket.on("groupmessage", (data) => {
     console.log(data.to);
