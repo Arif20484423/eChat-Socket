@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors";
-import { User } from "./models/models.js";
 const app = express();
 import http from "http";
 import { Server } from "socket.io";
@@ -36,10 +35,9 @@ io.on("connection", (socket) => {
       .emit("message", { from: data.from, message: data.message });
   });
   socket.on("delete", (data) => {
-    console.log("passing delete", data.to);
     socket
       .to(data.to)
-      .emit("delete", { from: data.from, message: data.message });
+      .emit("delete", { from: data.from, messageid: data.messageid });
   });
   socket.on("groupmessage", (data) => {
     console.log(data.to);
