@@ -8,7 +8,6 @@ import { Server } from "socket.io";
 app.use(cors());
 const server = http.createServer(app);
 
-console.log(process.env.CHATAPP_URL);
 const io = new Server(server, {
   cors: {
     origin: process.env.CHATAPP_URL,
@@ -17,19 +16,11 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("Connected ");
   socket.on("join_room", (data) => {
     socket.join(data.room);
     socket.user = data.room;
-    console.log("joined");
-    socket.emit("check",{"check":"true"})
-    socket.to(["6865045782b8737c7767d856"]).emit("checkto", { checkto: "true" });
   });
-  socket.to("6865045782b8737c7767d856").emit("checkto",{"checkto":"true"})
   socket.on("message", (data) => {
-    console.log("REC", data.to[0]);
-    console.log(data.from)
-    console.log(data.message)
     socket
       .to(data.to)
       .emit("message", { from: data.from, message: data.message });
@@ -40,7 +31,6 @@ io.on("connection", (socket) => {
       .emit("delete", { from: data.from, messageid: data.messageid });
   });
   socket.on("groupmessage", (data) => {
-    console.log(data.to);
     for (let i = 0; i < data.to.length; i++) {
       socket
         .to(data.to[i])
