@@ -11,16 +11,19 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.CHATAPP_URL,
-    method: ["GET", "POST"],
+    methods: ["GET", "POST"],
+    
+  
   },
 });
 
 io.on("connection", (socket) => {
+  console.log("connected")
   socket.on("join_room", (data) => {
     socket.join(data.room);
     socket.user = data.room;
   });
-  socket.on("message", (data) => {
+  socket.on("message", (data) => { 
     socket
       .to(data.to)
       .emit("message", { from: data.from, message: data.message });
