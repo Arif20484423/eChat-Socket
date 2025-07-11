@@ -14,6 +14,9 @@ const io = new Server(server, {
     method: ["GET", "POST"],
   },
 });
+app.get("/",(req,res)=>{
+  res.json({success:true,message:"Server woke up"})
+})
 
 io.on("connection", (socket) => {
   console.log("connected");
